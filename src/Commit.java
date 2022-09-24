@@ -17,7 +17,7 @@ public class Commit {
 	private String author;
 	private String date;
 	
-	public Commit (String nptree, String nsummary, String nauthor, Commit nparent) {
+	public Commit ( String nsummary, String nauthor, Commit nparent) {
 		if (parent != null) {
 			parent = nparent.getLoc();
 		}
@@ -26,10 +26,14 @@ public class Commit {
 		}
 		child = null;
 		
-		ptree = nptree;
+		
 		summary = nsummary;
 		author = nauthor;
 		date = Calendar.getInstance().getTime().toString();
+		
+		//make tree obj
+		TreeObject tree=new TreeObject();
+		
 	}
 	
 	public String getDate() {
