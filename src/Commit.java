@@ -17,7 +17,7 @@ public class Commit {
 	private String author;
 	private String date;
 	
-	public Commit ( String nsummary, String nauthor, Commit nparent) {
+	public Commit ( String nsummary, String nauthor, Commit nparent) throws IOException {
 		if (parent != null) {
 			parent = nparent.getLoc();
 		}

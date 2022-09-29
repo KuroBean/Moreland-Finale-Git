@@ -8,38 +8,52 @@ import java.util.ArrayList;
 
 public class TreeObject implements GitUtils {
 
-	public ArrayList<String> things;
+	public ArrayList<String[]> things;
 	public File writing;
 	public String fileContents = "";
 	public String sha;
+	public String treeFilePath;
 	
-	public TreeObject () throws IOException {
+	public TreeObject (String prevCommitTree) throws IOException {
 		File indexFile=new File("index");
 		BufferedReader indexReader=new BufferedReader(new FileReader(indexFile));
 		
 		String line=indexReader.readLine();
-		things=new ArrayList<String>();
+		things=new ArrayList<String[]>();
 				
+		
 		while(!line.equals(null)) {
-			things.add(line);
+			things.add(line.split(" "));//each arraylist entry is og name and sha1 name
+			//first in array is og name, second is sha 1 anem
 			line=indexReader.readLine();
 		}
-		//do smth to convert index format to tree format w/ blob sha1name ogname
 		
-		for (String str : things) {
-			fileContents = fileContents + str + "\n";
+		
+		
+		for (int i=0;i<things.size();i++) {
+			fileContents +="blob : "+things.get(i)[1]+" "+things.get(i)[0];
+			if(i+1!=things.size()) {
+				fileContents+="\n";
+			}
 		}
+		fileCntents+
+		
+		//STILL NEED TO ADD PREVIOUS COMMIT'S TREE
+		
 		sha = GitUtils.StringToSha(fileContents);
 		writing = new File(sha);
+		writing.createNewFile();
 		printFile();
+		
+	}
+	public String treePath() {
+		return writing.getPath();
 	}
 	
 	private boolean printFile() {
 		try {
 			PrintWriter au = new PrintWriter(writing);
-			for (String str : things) {
-				au.append(str + "\n");
-			}
+			au.print(fileContents);
 			au.close();
 			return true;
 		} catch (Exception e) {

@@ -14,16 +14,16 @@ public class Index {
 	
 	private HashMap<String, String> codes;
 
-	public Index () {
+	public Index () throws IOException {
 		codes = new HashMap<String, String>();
 		initialize();
 	}
 	
 	//creates objects and index.txt file
-	public void initialize () {
+	public void initialize () throws IOException {
 		
 		new File("objects").mkdirs();
-		new File("index.txt");
+		new File("index.txt").createNewFile();
 		
 		/*
 		switch (System.getProperty("os.name")) {
