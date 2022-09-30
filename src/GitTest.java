@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -61,14 +62,14 @@ class IndexTest {
 	}
 	
 	@Test
-	void makeIndex() {
+	void makeIndex() throws IOException {
 		Index b = new Index();
 		assertTrue(new File("objects").exists());
 		b.delete();
 	}
 	
 	@Test
-	void IndexAddAndRemove() {
+	void IndexAddAndRemove() throws IOException {
 		Index b = new Index();
 		try { b.addBlob(filePath); }
 		catch (Exception e) {e.printStackTrace();}

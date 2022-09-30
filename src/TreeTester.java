@@ -39,7 +39,7 @@ class TreeTester{
 		listee[1] = "fjieowfew";
 		listee[2] = "fjieowjfewoijfew";
 		
-		tree = new TreeObject(listee);
+		//tree = new TreeObject(listee);
 	}
 	
 	

@@ -15,28 +15,32 @@ public class TreeObject implements GitUtils {
 	public String treeFilePath;
 	
 	public TreeObject (String prevCommitTree) throws IOException {
-		File indexFile=new File("index");
+		File indexFile=new File("index.txt");
 		BufferedReader indexReader=new BufferedReader(new FileReader(indexFile));
 		
 		String line=indexReader.readLine();
 		things=new ArrayList<String[]>();
 				
 		
-		while(!line.equals(null)) {
+		while(line!=null) {
 			things.add(line.split(" "));//each arraylist entry is og name and sha1 name
 			//first in array is og name, second is sha 1 anem
 			line=indexReader.readLine();
 		}
-		
-		
+		/**
+		//test split
+		for(String[] lin:things) {
+			System.out.println(lin[0]);
+			System.out.println(lin[1]);
+			System.out.println(lin[2]);
+		}*/
 		
 		for (int i=0;i<things.size();i++) {
-			fileContents +="blob : "+things.get(i)[1]+" "+things.get(i)[0];
-			if(i+1!=things.size()) {
-				fileContents+="\n";
-			}
+			fileContents +="blob : "+things.get(i)[2]+" "+things.get(i)[0]+"\n";
 		}
-		fileCntents+
+		if(prevCommitTree!=null) {
+			fileContents+="tree: "+prevCommitTree;
+		}
 		
 		//STILL NEED TO ADD PREVIOUS COMMIT'S TREE
 		
