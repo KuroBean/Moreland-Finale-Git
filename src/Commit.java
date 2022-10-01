@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,37 +14,45 @@ import java.util.Calendar;
 
 public class Commit {
 
-	private String parent;
-	private String child;
-	private TreeObject tree;
+	private Commit parent;
+	private Commit child;
+	private String ptree;
 	private String summary;
 	private String author;
 	private String date;
 	
 	public Commit ( String nsummary, String nauthor, Commit nparent) throws IOException, NoSuchAlgorithmException {
-		if (parent != null) {
-			parent = nparent.getLoc();
+		if (nparent != null) {
+			parent = nparent;
 		}
 		else {
 			parent = null;
 		}
 		child = null;
 		
-		
 		summary = nsummary;
 		author = nauthor;
 		date = Calendar.getInstance().getTime().toString();
 		
 		//make tree obj
-		String prevTree="";
+		String prevTree=null;
 		if(parent!=null) {
-			File prevCommit=new File(parent);
-			prevTree=getLine(prevCommit,1);
+			prevTree=parent.getTree();
 		}
 		TreeObject newtree=new TreeObject(prevTree);
-		tree=newtree;
+		ptree=newtree.treePath();
 		create();
+		clearFile("index.txt");
+		
 	}
+	
+	private void clearFile(String fileName) throws FileNotFoundException {
+		File file = new File(fileName);
+		PrintWriter writer = new PrintWriter(file);
+		writer.print("");
+		writer.close();
+	}
+	
 	private String getLine(File fileName,int lineNum) throws IOException {
 		BufferedReader reader=new BufferedReader(new FileReader(fileName));
 		String line="";
@@ -52,10 +61,10 @@ public class Commit {
 		}
 		reader.close();
 		return line;
-		
 	}
-	public TreeObject getTree() {
-		return tree;
+	
+	public String getTree() {
+		return ptree;
 	}
 	
 	public String getDate() {
@@ -63,11 +72,26 @@ public class Commit {
 	}
 	
 	public String getLoc() {
-		return "objects/" + getContents();
+		return ptree;
 	}
 	
-	public String getContents() {
-		return "" + tree + "\n" + parent + "\n" + child + "\n" + author + "\n" + date + "\n" + summary;
+	public String getContents() throws NoSuchAlgorithmException {
+		String total=ptree;
+		if(parent==null) {
+			total+="\n";
+		}else {
+			total+="\n"+parent.getHash();
+		}
+		
+		if(child==null) {
+			total+="\n";
+		}else {
+			total+="\n"+child.getHash();
+		}
+		
+		total+="\n"+author+"\n"+date+"\n"+summary;
+		
+		return total;
 
 	}
 	
@@ -83,7 +107,6 @@ public class Commit {
 	}
 		
 	public void create() throws IOException, NoSuchAlgorithmException {
-		
         
         File file = new File("./objects/" + getHash() + ".txt");
         file.createNewFile();

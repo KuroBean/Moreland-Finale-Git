@@ -26,12 +26,10 @@ class CommitTest {
 		index.initialize();
 		index.addBlob("test.txt");
 		
-		File filey=new File("test1.txt");
-		System.out.println(filey.exists());
-		
 		index.addBlob("test1.txt");
 		
 		Commit first=new Commit("this sit he first one","jeff",null);
+		
 		index.addBlob("test2.txt");
 		
 		Commit second=new Commit("second oen here","bofa",first);

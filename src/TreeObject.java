@@ -20,7 +20,6 @@ public class TreeObject implements GitUtils {
 		
 		String line=indexReader.readLine();
 		things=new ArrayList<String[]>();
-				
 		
 		while(line!=null) {
 			things.add(line.split(" "));//each arraylist entry is og name and sha1 name
@@ -39,19 +38,19 @@ public class TreeObject implements GitUtils {
 			fileContents +="blob : "+things.get(i)[2]+" "+things.get(i)[0]+"\n";
 		}
 		if(prevCommitTree!=null) {
-			fileContents+="tree: "+prevCommitTree;
+			fileContents+="tree : "+prevCommitTree;
 		}
 		
 		//STILL NEED TO ADD PREVIOUS COMMIT'S TREE
 		
 		sha = GitUtils.StringToSha(fileContents);
-		writing = new File(sha);
+		writing = new File("objects/"+sha);
 		writing.createNewFile();
 		printFile();
 		
 	}
 	public String treePath() {
-		return writing.getPath();
+		return writing.getName();
 	}
 	
 	private boolean printFile() {
