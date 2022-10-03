@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Commit {
@@ -20,6 +21,7 @@ public class Commit {
 	private String summary;
 	private String author;
 	private String date;
+	private String commitFileName;
 	
 	public Commit ( String nsummary, String nauthor, Commit nparent) throws IOException, NoSuchAlgorithmException {
 		if (nparent != null) {
@@ -42,8 +44,13 @@ public class Commit {
 		TreeObject newtree=new TreeObject(prevTree);
 		ptree=newtree.treePath();
 		create();
+		commitFileName=getHash()+".txt";
+		
 		clearFile("index.txt");
 		
+	}
+	public String getFileName() {
+		return commitFileName;
 	}
 	
 	private void clearFile(String fileName) throws FileNotFoundException {
@@ -62,6 +69,22 @@ public class Commit {
 		reader.close();
 		return line;
 	}
+	
+	private ArrayList<String[]> getFileContentTokens(File fileName) throws IOException{
+		ArrayList<String[]> result=new ArrayList<String[]>();
+		File file=new File("fileName");
+		BufferedReader reader=new BufferedReader(new FileReader(file));
+
+		String line=reader.readLine();
+		
+		while(line!=null) {
+			result.add(line.split(" "));//each arraylist entry is og name and sha1 name
+			//first in array is og name, second is sha 1 anem
+			line=reader.readLine();
+		}
+		
+		return result;
+	}//when reading blob in a tree file, [0] is tree or blob, then colon, then sha'd file name, then og name
 	
 	public String getTree() {
 		return ptree;
