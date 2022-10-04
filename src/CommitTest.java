@@ -84,10 +84,13 @@ class CommitTest {
 	void testRemove() throws IOException, NoSuchAlgorithmException{
 		Index dexy=new Index();
 		dexy.addBlob("test.txt");
-		dexy.addBlob("test1.txt");
 		Commit first=new Commit("this sit he first one","jeff senior",null);
+		dexy.addBlob("test1.txt");
+		Commit second=new Commit("this is second one, for test 1 text for some reason","bezos the second",first);
 		dexy.remove("test.txt");
-		
+		//dexy.addBlob("test2.txt");
+		Commit third=new Commit("third oen here","3 bofas",second);
+	
 	}
 	
 	private String fileContent(String path) throws IOException {

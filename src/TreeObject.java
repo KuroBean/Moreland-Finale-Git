@@ -53,42 +53,94 @@ public class TreeObject implements GitUtils {
 			for (int i=0;i<removeReferences.size();i++) { 
 				removeFileNames.add(removeReferences.get(i)[2]);
 			}
-			ArrayList<String[]> extraReferences=referencesNeededFromTree(this, removeFileNames);
-		
+			ArrayList<String[]> totalReferences=referencesNeededFromTree(this.treePath(), removeFileNames);
+			
+			//delete previous tree file with writiting ref
+			writing.delete();
+			
+			StringBuilder sb=new StringBuilder();
 			//make file contents=result from recursion, re-sha and re create file
+			for(int m=0;m<totalReferences.size();m++) {
+				for(int i=0;i<totalReferences.get(m).length;i++) {
+					sb.append(totalReferences.get(m)[i]);
+					if(i+1!=totalReferences.get(m).length) {
+						sb.append(" ");
+					}
+				}
+				if(m+1!=totalReferences.size()) {
+					sb.append("\n");
+				}
+			}
+			fileContents=sb.toString();
+			sha = GitUtils.StringToSha(fileContents);
+			writing = new File("objects/"+sha+".txt");
+			writing.createNewFile();
+			printFile();
 		}
 	}
 	
 	//takes in fiel ogname for remove file naems
-	private ArrayList<String[]> referencesNeededFromTree(TreeObject tree, ArrayList<String> removingFiles) throws IOException{
-		 ArrayList<String[]> treeContent=getFileContentTokens("./objects/"+tree.treePath());
+	private ArrayList<String[]> referencesNeededFromTree(String treePath, ArrayList<String> removingFiles) throws IOException{
+		 ArrayList<String[]> treeContent=getFileContentTokens("./objects/"+treePath);
 		 //in each thing in result, [0] is type,[1] is :, [2] is sha name, [3] is og name
 		 ArrayList<String[]> result=new ArrayList<String[]>();
 		 //check if file to be deleteed is in tree
-		 for(String[] line:treeContent) {
-			 if(line.length==3) {//if is tree data
-				 
+		 
+		 if(!fileInthisTree(removingFiles,treeContent)&&!treesInTreeHaveRemovedFiles(removingFiles,treeContent)) {
+			 //base case: files not in given tree and all trees in tree not connected to any of the files
+			 //result.addAll(referencesNeededFromTree("./objects/"+line[2],removingFiles));
+			 result.add(("tree : "+treePath).split(" "));
+		 }else {
+			 for(String[] line:treeContent) {
+				 //add all blob lines except the removing ones
+				 if(line.length==4) {//if blob
+					 if(!fileIsInRemovedList(removingFiles,line[3])) {
+						 result.add(line);
+					 }
+				 }else if(line.length==3) {//if tree
+					 result.addAll(referencesNeededFromTree(line[2],removingFiles));
+				 }
 			 }
-		 
 		 }
-		 
 		 return result;
 	}
 	
-	private boolean fileInTree(String fileName,ArrayList<String[]> treeContent) {
-		for(String[] line:treeContent) {
-			if(line.length==4&&line[3].equals(fileName)) {
+	private boolean fileIsInRemovedList(ArrayList<String>  removingFiles, String fileName){
+		for (String name:removingFiles) {
+			if(name.equals(fileName)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	private boolean treesInTreeHaveRemovedFiles(ArrayList<String>  removingFiles,ArrayList<String[]> treeContent) throws IOException {
+		for(String[] line:treeContent) {
+			if(line.length==3){//if tree info line
+				if(referencesNeededFromTree(line[2],removingFiles).size()>1) {//jsut the tree couldnt be returnd bc there was file refercning to the nonos soemwhere
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean fileInthisTree(ArrayList<String>  removingFiles,ArrayList<String[]> treeContent) {
+		for(String[] line:treeContent) {
+			if(line.length==4) {//is blob
+				for(String files:removingFiles) {
+					if(files.equals(line[3])) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	public String treePath() {
 		return writing.getName();
 	}
-	
 
 	private ArrayList<String[]> getFileContentTokens(String filePath) throws IOException{
 		ArrayList<String[]> result=new ArrayList<String[]>();
