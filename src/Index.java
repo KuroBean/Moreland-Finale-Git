@@ -50,17 +50,23 @@ public class Index {
 		codes.remove(fileName);
 		printHashMap();
 	}
-	public void edit(String fileName) throws IOException {// marks file to remove in index file
+	public void edit(String fileName,String edited) throws IOException, NoSuchAlgorithmException {// marks file to remove in index file
 		codes.put("*edited*", fileName);
 		codes.remove(fileName);
 		printHashMap();
+		PrintWriter writer=new PrintWriter(new File(fileName));
+		writer.write(edited);
+		writer.close();
+		addBlob(fileName);
 	}
 	
 	public void clearIndex() throws FileNotFoundException {
+		
 		File file = new File("index.txt");
 		PrintWriter writer = new PrintWriter(file);
 		writer.print("");
 		writer.close();
+		
 		codes.clear();
 	}
 	

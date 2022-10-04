@@ -2,6 +2,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,6 +25,8 @@ class CommitTest {
 	static void tearDownAfterClass() throws Exception {
 		
 	}
+	
+	//UNCOMMENT TO ACTIVATE COMMIT CLASS TESTER, NOT THE REMOVE/EDIT TESTER
 	/**
 	@Test
 	void testCommit() throws IOException, NoSuchAlgorithmException {
@@ -81,18 +84,64 @@ class CommitTest {
 	}*/
 	
 	@Test 
-	void testRemove() throws IOException, NoSuchAlgorithmException{
+	void testRemoveAndEdit() throws IOException, NoSuchAlgorithmException{
 		Index dexy=new Index();
 		dexy.addBlob("test.txt");
-		Commit first=new Commit(dexy,"this sit he first one","jeff senior",null);
-		dexy.clearIndex();
-		
 		dexy.addBlob("test1.txt");
-		Commit second=new Commit(dexy, "this is second one, for test 1 text for some reason","bezos the second",first);
+		Commit first=new Commit(dexy,"this sit he first one","jeff senior",null);
+		
+		
+		dexy.addBlob("test2.txt");
 		dexy.remove("test.txt");
-		//dexy.addBlob("test2.txt");
+		Commit second=new Commit(dexy, "this is second one, for test 1 text for some reason","bezos the second",first);
+		
+		
+		dexy.addBlob("testBean.txt");
+		dexy.addBlob("test4.txt");
 		Commit third=new Commit(dexy,"third oen here","3 bofas",second);
-	
+		//dexy.addBlob("test2.txt");
+		//dexy.edit("text4.txt", "hehe edited");
+		dexy.edit("test4.txt","hehe edited");
+		dexy.remove("testBean.txt");
+
+		Commit fourth=new Commit(dexy,"4thh beeth here","4 beans",third);
+		
+		dexy.edit("test1.txt","changed rip");
+		Commit fifth=new Commit(dexy,"5th is the worst movie","knuckels 5",fourth);
+		
+		
+		assertTrue((fileContent("./objects/"+first.getFileName())).contains("0e962778adfb8df2b491f243f5ce4c7897ae6596.txt\n"
+				+ "\n"
+				+ "960929af442ebdc58e9433998ee3fe974405ccec.txt\n"
+				+ "jeff senior"));
+		assertTrue((fileContent("./objects/"+second.getFileName())).contains("9d71307eb78705ed1339d2e7b531efad19dc0ee7.txt\n"
+				+ "149cc1599f6bba316f21a4b415f05964bc7c1549.txt\n"
+				+ "5fe4a82fb909967a7de23df771212ff242a2c0ef.txt\n"
+				+ "bezos the second"));
+		assertTrue((fileContent("./objects/"+third.getFileName())).contains("e6109268dc0ed929cf6cbbeeb7708401229a481a.txt\n"
+				+ "960929af442ebdc58e9433998ee3fe974405ccec.txt\n"
+				+ "9fe60f63d913c9f46c29e1386fb3cb52ad9168c8.txt\n"
+				+ "3 bofas"));
+		assertTrue((fileContent("./objects/"+fourth.getFileName())).contains("7a414eccab4c75458bdc6dd9fe22a5bb3e039cb1.txt\n"
+				+ "5fe4a82fb909967a7de23df771212ff242a2c0ef.txt\n"
+				+ "c6b224ba15f38789b0004a549abc9bfeb9bcfe46.txt\n"
+				+ "4 beans"));
+		assertTrue((fileContent("./objects/"+fourth.getFileName())).contains("b88fffba22415d2c8119c50a5bcad25a8e25a6b0.txt\n"
+				+ "9fe60f63d913c9f46c29e1386fb3cb52ad9168c8.txt\n"
+				+ "\n"
+				+ "knuckels 5"));
+		
+		
+		
+		
+		File file = new File("test1.txt");
+		PrintWriter writer = new PrintWriter(file);
+		writer.print("og first");
+		writer.close();
+		File filey = new File("test4.txt");
+		PrintWriter writery = new PrintWriter(filey);
+		writery.print("4th before change");
+		writery.close();
 	}
 	
 	private String fileContent(String path) throws IOException {

@@ -27,10 +27,19 @@ public class TreeObject implements GitUtils {
 		}
 		*/
 		removeReferences=new ArrayList<String[]>();
+		ArrayList<String[]> edited=new ArrayList<String[]>();
 		for (int i=0;i<things.size();i++) {
 			if(things.get(i)[0].charAt(0)=='*') {
 				removeReferences.add(things.get(i));//remove references hold lines with *deleted or edit*
 				//0 is delete or edit, 1 is:, 2 is filename
+				if(things.get(i)[0].equals("*edited*")) {
+					for(String[] editedFile:things) {
+						if(editedFile[0].equals(things.get(i)[2])) {
+							edited.add(editedFile);
+						}
+					}
+					
+				}
 			}else {
 				fileContents +="blob : "+things.get(i)[2]+" "+things.get(i)[0]+"\n";
 			}
@@ -54,6 +63,10 @@ public class TreeObject implements GitUtils {
 				removeFileNames.add(removeReferences.get(i)[2]);
 			}
 			ArrayList<String[]> totalReferences=referencesNeededFromTree(this.treePath(), removeFileNames);
+			//totalReferences.addAll(edited);
+			for (String[] line : edited) {
+				totalReferences.add(("blob : "+line[2] +" "+line[0]).split(" "));
+			}
 			
 			//delete previous tree file with writiting ref
 			writing.delete();
@@ -76,7 +89,8 @@ public class TreeObject implements GitUtils {
 			writing = new File("objects/"+sha+".txt");
 			writing.createNewFile();
 			printFile();
-			printRemovedFilesToIndex(removeReferences);
+			printRemovedFilesToIndex(removeReferences); 
+			
 		}
 	}
 	private void printRemovedFilesToIndex(ArrayList<String[]> removingFileLines) throws FileNotFoundException {

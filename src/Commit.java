@@ -28,7 +28,7 @@ public class Commit {
 		if (nparent != null) {
 			parent = nparent;
 		}
-		else {
+		else { 
 			parent = null;
 		} 
 		child = null;
