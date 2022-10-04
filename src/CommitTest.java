@@ -88,33 +88,33 @@ class CommitTest {
 		Index dexy=new Index();
 		dexy.addBlob("test.txt");
 		dexy.addBlob("test1.txt");
-		Commit first=new Commit(dexy,"this sit he first one","jeff senior",null);
+		Commit first=new Commit(dexy,"this sit he first one","jeff senior");
 		
 		
 		dexy.addBlob("test2.txt");
 		dexy.remove("test.txt");
-		Commit second=new Commit(dexy, "this is second one, for test 1 text for some reason","bezos the second",first);
+		Commit second=new Commit(dexy, "this is second one, for test 1 text for some reason","bezos the second");
 		
 		
 		dexy.addBlob("testBean.txt");
 		dexy.addBlob("test4.txt");
-		Commit third=new Commit(dexy,"third oen here","3 bofas",second);
+		Commit third=new Commit(dexy,"third oen here","3 bofas");
 		//dexy.addBlob("test2.txt");
 		//dexy.edit("text4.txt", "hehe edited");
 		dexy.edit("test4.txt","hehe edited");
 		dexy.remove("testBean.txt");
 
-		Commit fourth=new Commit(dexy,"4thh beeth here","4 beans",third);
+		Commit fourth=new Commit(dexy,"4thh beeth here","4 beans");
 		
 		dexy.edit("test1.txt","changed rip");
-		Commit fifth=new Commit(dexy,"5th is the worst movie","knuckels 5",fourth);
-		
-		
+		Commit fifth=new Commit(dexy,"5th is the worst movie","knuckels 5");
+		//System.out.println((fileContent("./objects/"+first.getFileName())).contains("a51be64c2a947773e132358cbe2afd347a775217.txt"));
 		assertTrue((fileContent("./objects/"+first.getFileName())).contains("a51be64c2a947773e132358cbe2afd347a775217.txt"));
 		assertTrue((fileContent("./objects/"+second.getFileName())).contains("0a810f1724396acbcaa5b1c13dc8f49f60a20900.txt"));
 		
 		assertTrue((fileContent("./objects/"+third.getFileName())).contains("d3b0b828f0ae8016312bd2c9110cdba7b34c1044.txt"));
 		assertTrue((fileContent("./objects/"+fourth.getFileName())).contains("5e8c5afc17a9d74ddc90b21644a0ba9d595f2457.txt"));
+		
 		assertTrue((fileContent("./objects/"+fifth.getFileName())).contains("b88fffba22415d2c8119c50a5bcad25a8e25a6b0.txt"));
 		
 		

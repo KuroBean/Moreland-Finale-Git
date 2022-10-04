@@ -15,8 +15,8 @@ import java.util.Calendar;
 
 public class Commit {
 
-	private Commit parent;
-	private Commit child;
+	private String parent;
+	private String child;
 	private String ptree;
 	private String summary;
 	private String author;
@@ -24,13 +24,11 @@ public class Commit {
 	private String commitFileName;
 	
 	//INDEX PARAM ADDED TO CLEAR AFTER EVERY COMMIT CONSTRUCTED
-	public Commit (Index dexy,String nsummary, String nauthor, Commit nparent) throws IOException, NoSuchAlgorithmException {
-		if (nparent != null) {
-			parent = nparent;
-		}
-		else { 
-			parent = null; 
-		} 
+	public Commit (Index dexy,String nsummary, String nauthor) throws IOException, NoSuchAlgorithmException {
+		File cabeza=new File("Head.txt");
+		BufferedReader headRead=new BufferedReader(new FileReader(cabeza));
+		parent=headRead.readLine();
+		headRead.close();
 		
 		child = null;
 		
@@ -40,27 +38,60 @@ public class Commit {
 		
 		//make tree obj
 		String prevTree=null; 
-		if(parent!=null) {
-			prevTree=parent.getTree();
+		File prevCommit;
+		
+		ArrayList<String> prevCommitContent=new ArrayList<String>();
+		if(parent!=null) {//read parent commit's first lien fro prev tree
+			prevCommit=new File("./objects/"+parent);
+			System.out.println(prevCommit.exists());
+			BufferedReader prevRead=new BufferedReader(new FileReader(prevCommit));
+			prevTree=prevRead.readLine();
+			prevCommitContent.add(prevTree);
+			String line= prevRead.readLine();
+			while (line!=null) {
+				prevCommitContent.add(line);
+				line= prevRead.readLine();
+			}
+			prevRead.close();
+			
 		}
+		
 		TreeObject newtree=new TreeObject(prevTree);
 		ptree=newtree.treePath(); 
 		commitFileName=getHash()+".txt";
 		create();
 		
+		/**
 		if(parent!=null) {
 			parent.setChild(this); 
 			parent.create();
-		}
+		}*/
+		if(parent!=null) {
+			prevCommit=new File("./objects/"+parent);
+			PrintWriter prevWrite=new PrintWriter(prevCommit);
+			String prevContent=fileContent("./objects/"+parent);
+			for(int i=0;i<prevCommitContent.size();i++) {
+				if(i==2) {
+					prevWrite.println(this.getFileName());
+				}else if(i+1==prevCommitContent.size()){
+					prevWrite.print(prevCommitContent.get(i));
+				}else {
+					prevWrite.println(prevCommitContent.get(i));
+				}
+			}
+			prevWrite.close();
+			}
+		
 		dexy.clearIndex();
+		
 		PrintWriter headWrite=new PrintWriter(new File("Head.txt"));
 		headWrite.write(this.getFileName());
 		headWrite.close();
 	}
-	
+	/**
 	public void setChild(Commit kid) {
 		this.child=kid;
-	}
+	}*/
 	
 	public String getFileName() {
 		return commitFileName;
@@ -72,7 +103,7 @@ public class Commit {
 		writer.print("");
 		writer.close();
 	}
-	/**
+	
 	private String getLine(File fileName,int lineNum) throws IOException {
 		BufferedReader reader=new BufferedReader(new FileReader(fileName));
 		String line="";
@@ -82,7 +113,7 @@ public class Commit {
 		reader.close();
 		return line;
 	}
-	
+	/**
 	private ArrayList<String[]> getFileContentTokens(String fileName) throws IOException{
 		ArrayList<String[]> result=new ArrayList<String[]>();
 		File file=new File(fileName);
@@ -116,13 +147,13 @@ public class Commit {
 		if(parent==null) {
 			total+="\n";
 		}else {
-			total+="\n"+parent.getFileName();
+			total+="\n"+parent;
 		}
 		
 		if(child==null) {
 			total+="\n";
 		}else {
-			total+="\n"+child.getFileName();
+			total+="\n"+child;
 		}
 		
 		total+="\n"+author+"\n"+date+"\n"+summary;
@@ -140,6 +171,11 @@ public class Commit {
             hashtext = "0" + hashtext;
 		}
         return hashtext;
+	}
+	
+	private String fileContent(String path) throws IOException {
+		Path treePath= Paths.get(path);
+		return (Files.readString(treePath));
 	}
 		
 	public void create() throws IOException, NoSuchAlgorithmException {
