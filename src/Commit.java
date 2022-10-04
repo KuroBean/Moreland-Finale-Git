@@ -29,8 +29,9 @@ public class Commit {
 			parent = nparent;
 		}
 		else { 
-			parent = null;
+			parent = null; 
 		} 
+		
 		child = null;
 		
 		summary = nsummary;
@@ -52,6 +53,9 @@ public class Commit {
 			parent.create();
 		}
 		dexy.clearIndex();
+		PrintWriter headWrite=new PrintWriter(new File("Head.txt"));
+		headWrite.write(this.getFileName());
+		headWrite.close();
 	}
 	
 	public void setChild(Commit kid) {
