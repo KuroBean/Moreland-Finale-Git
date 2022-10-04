@@ -23,7 +23,8 @@ public class Commit {
 	private String date;
 	private String commitFileName;
 	
-	public Commit ( String nsummary, String nauthor, Commit nparent) throws IOException, NoSuchAlgorithmException {
+	//INDEX PARAM ADDED TO CLEAR AFTER EVERY COMMIT CONSTRUCTED
+	public Commit (Index dexy,String nsummary, String nauthor, Commit nparent) throws IOException, NoSuchAlgorithmException {
 		if (nparent != null) {
 			parent = nparent;
 		}
@@ -46,11 +47,11 @@ public class Commit {
 		commitFileName=getHash()+".txt";
 		create();
 		
-		clearFile("index.txt"); 	
 		if(parent!=null) {
-			parent.setChild(this);
+			parent.setChild(this); 
 			parent.create();
 		}
+		dexy.clearIndex();
 	}
 	
 	public void setChild(Commit kid) {
@@ -67,7 +68,7 @@ public class Commit {
 		writer.print("");
 		writer.close();
 	}
-	
+	/**
 	private String getLine(File fileName,int lineNum) throws IOException {
 		BufferedReader reader=new BufferedReader(new FileReader(fileName));
 		String line="";
@@ -93,7 +94,7 @@ public class Commit {
 		
 		return result;
 	}//when reading blob in a tree file, [0] is tree or blob, then colon, then sha'd file name, then og name
-	
+	*/
 	public String getTree() {
 		return ptree;
 	}

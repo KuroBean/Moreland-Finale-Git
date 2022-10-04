@@ -36,10 +36,8 @@ public class TreeObject implements GitUtils {
 			}
 		}
 		
-		
 		if(prevCommitTree!=null) {
 			fileContents+="tree : "+prevCommitTree;
-			
 		}
 
 		sha = GitUtils.StringToSha(fileContents);
@@ -48,6 +46,8 @@ public class TreeObject implements GitUtils {
 		printFile();
 		//finish writing everyhting for a hot sec
 		
+		
+		//entire removing bit
 		if(removeReferences.size()!=0) {
 			ArrayList<String> removeFileNames = new ArrayList<String>();
 			for (int i=0;i<removeReferences.size();i++) { 
@@ -76,15 +76,32 @@ public class TreeObject implements GitUtils {
 			writing = new File("objects/"+sha+".txt");
 			writing.createNewFile();
 			printFile();
+			printRemovedFilesToIndex(removeReferences);
 		}
+	}
+	private void printRemovedFilesToIndex(ArrayList<String[]> removingFileLines) throws FileNotFoundException {
+		StringBuilder sb=new StringBuilder();
+		for(int m=0;m<removingFileLines.size();m++) {
+			for(int i=0;i<removingFileLines.get(m).length;i++) {
+				sb.append(removingFileLines.get(m)[i]);
+				if(i+1!=removingFileLines.get(m).length) {
+					sb.append(" ");
+				}
+			}
+			if(m+1!=removingFileLines.size()) {
+				sb.append("\n");
+			}
+		}
+		PrintWriter indexWriter=new PrintWriter(new File("index.txt"));
+		indexWriter.print(sb.toString());
+		indexWriter.close();
 	}
 	
 	//takes in fiel ogname for remove file naems
 	private ArrayList<String[]> referencesNeededFromTree(String treePath, ArrayList<String> removingFiles) throws IOException{
 		 ArrayList<String[]> treeContent=getFileContentTokens("./objects/"+treePath);
-		 //in each thing in result, [0] is type,[1] is :, [2] is sha name, [3] is og name
+		 //in each thing in result, [0] is type,[1] is :, [2] is sha name, [3] is og name (for blobs onlu)
 		 ArrayList<String[]> result=new ArrayList<String[]>();
-		 //check if file to be deleteed is in tree
 		 
 		 if(!fileInthisTree(removingFiles,treeContent)&&!treesInTreeHaveRemovedFiles(removingFiles,treeContent)) {
 			 //base case: files not in given tree and all trees in tree not connected to any of the files
@@ -115,10 +132,15 @@ public class TreeObject implements GitUtils {
 	}
 	
 	private boolean treesInTreeHaveRemovedFiles(ArrayList<String>  removingFiles,ArrayList<String[]> treeContent) throws IOException {
+		ArrayList<String[]> neededContentofMiniTree=new ArrayList<String[]>();
 		for(String[] line:treeContent) {
 			if(line.length==3){//if tree info line
-				if(referencesNeededFromTree(line[2],removingFiles).size()>1) {//jsut the tree couldnt be returnd bc there was file refercning to the nonos soemwhere
+				neededContentofMiniTree=referencesNeededFromTree(line[2],removingFiles);
+				if(neededContentofMiniTree.size()!=1) {//jsut the tree couldnt be returnd bc there was file refercning to the nonos soemwhere
 					return true;
+				}else if(neededContentofMiniTree.size()>0&&!neededContentofMiniTree.get(0).equals(line[2])) {
+						return true;
+					
 				}
 			}
 		}

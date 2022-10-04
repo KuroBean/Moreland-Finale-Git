@@ -30,7 +30,7 @@ class CommitTest {
 		Index index = new Index();
 		index.initialize();
 		index.addBlob("test.txt");
-		Commit first=new Commit("this sit he first one","jeff senior",null);
+		Commit first=new Commit(index,"this sit he first one","jeff senior",null);
 		//System.out.println(fileContent("./objects/"+first.getFileName()));
 		assertTrue((fileContent("./objects/"+first.getFileName())).contains("68fd51de288de3dbf356c69e0bf0dd050cc44b77.txt\n"
 				+ "\n"
@@ -38,7 +38,7 @@ class CommitTest {
 				+ "jeff senior\n"));// CANT CHECK FOR DATE BC ALWAYS CHANGING
 		
 		index.addBlob("test1.txt");
-		Commit second=new Commit("this is second one, for test 1 text for some reason","bezos the second",first);
+		Commit second=new Commit(index,"this is second one, for test 1 text for some reason","bezos the second",first);
 		assertTrue((fileContent("./objects/"+second.getFileName())).contains("5b4a8af079c94379c124dadf8e910ef5425a9435.txt\n"
 				+ first.getFileName()+"\n"
 				+ "\n"
@@ -47,14 +47,14 @@ class CommitTest {
 		System.out.println(first.getFileName());
 		
 		index.addBlob("test2.txt");
-		Commit third=new Commit("third oen here","3 bofas",second);
+		Commit third=new Commit(index,"third oen here","3 bofas",second);
 		assertTrue((fileContent("./objects/"+third.getFileName())).contains("5f7e526a7695c0a95847e4bcff942d6f7404d41b.txt\n"
 				+ second.getFileName()+"\n"
 				+ "\n"
 				+ "3 bofas\n"));
 		
 		index.addBlob("testBean.txt");
-		Commit beans=new Commit("moar b e a n s","beanlover4",third);
+		Commit beans=new Commit(index,"moar b e a n s","beanlover4",third);
 		assertTrue((fileContent("./objects/"+beans.getFileName())).contains("62aa875616d4c796f49470546ef603a6c1d0d23d"
 				+ ".txt\n"
 				+ third.getFileName()+"\n"
@@ -84,12 +84,14 @@ class CommitTest {
 	void testRemove() throws IOException, NoSuchAlgorithmException{
 		Index dexy=new Index();
 		dexy.addBlob("test.txt");
-		Commit first=new Commit("this sit he first one","jeff senior",null);
+		Commit first=new Commit(dexy,"this sit he first one","jeff senior",null);
+		dexy.clearIndex();
+		
 		dexy.addBlob("test1.txt");
-		Commit second=new Commit("this is second one, for test 1 text for some reason","bezos the second",first);
+		Commit second=new Commit(dexy, "this is second one, for test 1 text for some reason","bezos the second",first);
 		dexy.remove("test.txt");
 		//dexy.addBlob("test2.txt");
-		Commit third=new Commit("third oen here","3 bofas",second);
+		Commit third=new Commit(dexy,"third oen here","3 bofas",second);
 	
 	}
 	

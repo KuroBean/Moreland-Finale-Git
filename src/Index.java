@@ -1,7 +1,9 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,7 +56,13 @@ public class Index {
 		printHashMap();
 	}
 	
-	
+	public void clearIndex() throws FileNotFoundException {
+		File file = new File("index.txt");
+		PrintWriter writer = new PrintWriter(file);
+		writer.print("");
+		writer.close();
+		codes.clear();
+	}
 	
 	public void addBlob(String fileLoc) throws NoSuchAlgorithmException, IOException { //adds blob
 		Blob blob = new Blob (fileLoc); //creates new blob
