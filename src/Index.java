@@ -45,10 +45,12 @@ public class Index {
 	
 	public void remove(String fileName) throws IOException {// marks file to remove in index file
 		codes.put("*deleted*", fileName);
+		codes.remove(fileName);
 		printHashMap();
 	}
 	public void edit(String fileName) throws IOException {// marks file to remove in index file
 		codes.put("*edited*", fileName);
+		codes.remove(fileName);
 		printHashMap();
 	}
 	

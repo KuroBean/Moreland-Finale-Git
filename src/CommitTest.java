@@ -24,7 +24,7 @@ class CommitTest {
 	static void tearDownAfterClass() throws Exception {
 		
 	}
-
+	/**
 	@Test
 	void testCommit() throws IOException, NoSuchAlgorithmException {
 		Index index = new Index();
@@ -77,6 +77,16 @@ class CommitTest {
 				+ second.getFileName()+"\n"
 				+ beans.getFileName()+"\n"
 				+ "3 bofas\n"));
+		
+	}*/
+	
+	@Test 
+	void testRemove() throws IOException, NoSuchAlgorithmException{
+		Index dexy=new Index();
+		dexy.addBlob("test.txt");
+		dexy.addBlob("test1.txt");
+		Commit first=new Commit("this sit he first one","jeff senior",null);
+		dexy.remove("test.txt");
 		
 	}
 	

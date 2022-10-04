@@ -7,8 +7,9 @@ public class KensukeRandTest {
 		// TODO Auto-generated method stub
 		Index dexy=new Index();
 		dexy.addBlob("test.txt");
-		TreeObject tree=new TreeObject("trealja;sldfjas");
+		dexy.addBlob("test1.txt");
+		//Commit()
 	}
-
+ 
 }
  

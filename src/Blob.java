@@ -7,7 +7,7 @@ import java.io.*;
 public class Blob {
 
 	private String sha1;
-	private String text;
+	private String text; 
 	private File file;
 	
 	public Blob(String fileLoc) throws IOException, NoSuchAlgorithmException {
