@@ -110,26 +110,12 @@ class CommitTest {
 		Commit fifth=new Commit(dexy,"5th is the worst movie","knuckels 5",fourth);
 		
 		
-		assertTrue((fileContent("./objects/"+first.getFileName())).contains("0e962778adfb8df2b491f243f5ce4c7897ae6596.txt\n"
-				+ "\n"
-				+ "960929af442ebdc58e9433998ee3fe974405ccec.txt\n"
-				+ "jeff senior"));
-		assertTrue((fileContent("./objects/"+second.getFileName())).contains("9d71307eb78705ed1339d2e7b531efad19dc0ee7.txt\n"
-				+ "149cc1599f6bba316f21a4b415f05964bc7c1549.txt\n"
-				+ "5fe4a82fb909967a7de23df771212ff242a2c0ef.txt\n"
-				+ "bezos the second"));
-		assertTrue((fileContent("./objects/"+third.getFileName())).contains("e6109268dc0ed929cf6cbbeeb7708401229a481a.txt\n"
-				+ "960929af442ebdc58e9433998ee3fe974405ccec.txt\n"
-				+ "9fe60f63d913c9f46c29e1386fb3cb52ad9168c8.txt\n"
-				+ "3 bofas"));
-		assertTrue((fileContent("./objects/"+fourth.getFileName())).contains("7a414eccab4c75458bdc6dd9fe22a5bb3e039cb1.txt\n"
-				+ "5fe4a82fb909967a7de23df771212ff242a2c0ef.txt\n"
-				+ "c6b224ba15f38789b0004a549abc9bfeb9bcfe46.txt\n"
-				+ "4 beans"));
-		assertTrue((fileContent("./objects/"+fourth.getFileName())).contains("b88fffba22415d2c8119c50a5bcad25a8e25a6b0.txt\n"
-				+ "9fe60f63d913c9f46c29e1386fb3cb52ad9168c8.txt\n"
-				+ "\n"
-				+ "knuckels 5"));
+		assertTrue((fileContent("./objects/"+first.getFileName())).contains("a51be64c2a947773e132358cbe2afd347a775217.txt"));
+		assertTrue((fileContent("./objects/"+second.getFileName())).contains("0a810f1724396acbcaa5b1c13dc8f49f60a20900.txt"));
+		
+		assertTrue((fileContent("./objects/"+third.getFileName())).contains("d3b0b828f0ae8016312bd2c9110cdba7b34c1044.txt"));
+		assertTrue((fileContent("./objects/"+fourth.getFileName())).contains("5e8c5afc17a9d74ddc90b21644a0ba9d595f2457.txt"));
+		assertTrue((fileContent("./objects/"+fifth.getFileName())).contains("b88fffba22415d2c8119c50a5bcad25a8e25a6b0.txt"));
 		
 		
 		
