@@ -31,7 +31,7 @@ public class TreeObject implements GitUtils {
 		for(String[] lin:things) {
 			System.out.println(lin[0]);
 			System.out.println(lin[1]);
-			System.out.println(lin[2]);
+			System.out.println(lin[2]); 
 		}*/
 		
 		for (int i=0;i<things.size();i++) {
@@ -41,10 +41,9 @@ public class TreeObject implements GitUtils {
 			fileContents+="tree : "+prevCommitTree;
 		}
 		
-		//STILL NEED TO ADD PREVIOUS COMMIT'S TREE
 		
 		sha = GitUtils.StringToSha(fileContents);
-		writing = new File("objects/"+sha);
+		writing = new File("objects/"+sha+".txt");
 		writing.createNewFile();
 		printFile();
 		

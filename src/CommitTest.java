@@ -2,9 +2,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.junit.jupiter.api.AfterAll;
@@ -29,38 +31,68 @@ class CommitTest {
 		index.initialize();
 		index.addBlob("test.txt");
 		Commit first=new Commit("this sit he first one","jeff senior",null);
-		System.out.println(fileContent("./objects/"+first.getFileName()));
-		assertTrue((fileContent("./objects/"+first.getFileName())).contains("68fd51de288de3dbf356c69e0bf0dd050cc44b77\n"
+		//System.out.println(fileContent("./objects/"+first.getFileName()));
+		assertTrue((fileContent("./objects/"+first.getFileName())).contains("68fd51de288de3dbf356c69e0bf0dd050cc44b77.txt\n"
 				+ "\n"
 				+ "\n"
 				+ "jeff senior\n"));// CANT CHECK FOR DATE BC ALWAYS CHANGING
 		
 		index.addBlob("test1.txt");
 		Commit second=new Commit("this is second one, for test 1 text for some reason","bezos the second",first);
-		assertTrue((fileContent("./objects/"+second.getFileName())).contains("37c4ad416afa261e740c7566f08b66d471d93854\n"
-				+ "3c68385f4137f071adeaae853568a43fb2e14879\n"
+		assertTrue((fileContent("./objects/"+second.getFileName())).contains("5b4a8af079c94379c124dadf8e910ef5425a9435.txt\n"
+				+ first.getFileName()+"\n"
 				+ "\n"
-				+ "bezos the second\n"));
+				+ "bezos the second"));
+		
+		System.out.println(first.getFileName());
 		
 		index.addBlob("test2.txt");
-		Commit third=new Commit("second oen here","3 bofas",second);
-		assertTrue((fileContent("./objects/"+third.getFileName())).contains("ed3fb19f1c1e4206e550aee21c0013a1115d6601\n"
-				+ "e3504374e824b2289dfa21b2547a5a4ef9116d45\n"
+		Commit third=new Commit("third oen here","3 bofas",second);
+		assertTrue((fileContent("./objects/"+third.getFileName())).contains("5f7e526a7695c0a95847e4bcff942d6f7404d41b.txt\n"
+				+ second.getFileName()+"\n"
 				+ "\n"
 				+ "3 bofas\n"));
 		
-	
 		index.addBlob("testBean.txt");
 		Commit beans=new Commit("moar b e a n s","beanlover4",third);
-		assertTrue((fileContent("./objects/"+beans.getFileName())).contains("ec255eca93effb460ef9dc6815636eff7ae3bf93f\n"
-				+ "5cb7982b23f4c6499403a851d0130d11502b7bc1\n"
+		assertTrue((fileContent("./objects/"+beans.getFileName())).contains("62aa875616d4c796f49470546ef603a6c1d0d23d"
+				+ ".txt\n"
+				+ third.getFileName()+"\n"
 				+ "\n"
-				+ "beanlover4\n"));
+				+ "beanlover4\n")); 
+		
+		System.out.println(first.getFileName());
+			
+			
+		assertTrue((fileContent("./objects/"+first.getFileName())).contains("68fd51de288de3dbf356c69e0bf0dd050cc44b77.txt\n"
+				+ "\n"
+				+ second.getFileName()+"\n"
+				+ "jeff senior"));
+		
+		assertTrue((fileContent("./objects/"+second.getFileName())).contains("5b4a8af079c94379c124dadf8e910ef5425a9435.txt\n"
+				+ first.getFileName()+"\n"
+				+ third.getFileName()+"\n"
+				+ "bezos the second"));
+		assertTrue((fileContent("./objects/"+third.getFileName())).contains("5f7e526a7695c0a95847e4bcff942d6f7404d41b.txt\n"
+				+ second.getFileName()+"\n"
+				+ beans.getFileName()+"\n"
+				+ "3 bofas\n"));
+		
 	}
 	
 	private String fileContent(String path) throws IOException {
 		Path treePath= Paths.get(path);
 		return (Files.readString(treePath));
+	}
+	public String getHash(String input) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1"); //generates sha1
+		byte[] messageDigest = md.digest(input.getBytes());
+		BigInteger no = new BigInteger(1, messageDigest);
+		String hashtext = no.toString(16);
+		while (hashtext.length() < 40) {
+            hashtext = "0" + hashtext;
+		}
+        return hashtext;
 	}
 
 }

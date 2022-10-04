@@ -43,11 +43,23 @@ public class Index {
 		*/
 	}
 	
+	public void remove(String fileName) throws IOException {// marks file to remove in index file
+		codes.put("*deleted*", fileName);
+		printHashMap();
+	}
+	public void edit(String fileName) throws IOException {// marks file to remove in index file
+		codes.put("*edited*", fileName);
+		printHashMap();
+	}
+	
+	
+	
 	public void addBlob(String fileLoc) throws NoSuchAlgorithmException, IOException { //adds blob
 		Blob blob = new Blob (fileLoc); //creates new blob
 		codes.put(fileLoc, blob.getSha()); //adds blob to hash map
 		printHashMap(); //updates index file
 	}
+	
 	
 	public void deleteBlob(String fileLoc) throws IOException { //deletes blob
 		//overwrites file with dummy file to be deleted

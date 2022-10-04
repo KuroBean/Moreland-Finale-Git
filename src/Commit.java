@@ -29,7 +29,7 @@ public class Commit {
 		}
 		else {
 			parent = null;
-		}
+		} 
 		child = null;
 		
 		summary = nsummary;
@@ -37,18 +37,26 @@ public class Commit {
 		date = Calendar.getInstance().getTime().toString();
 		
 		//make tree obj
-		String prevTree=null;
+		String prevTree=null; 
 		if(parent!=null) {
 			prevTree=parent.getTree();
 		}
 		TreeObject newtree=new TreeObject(prevTree);
-		ptree=newtree.treePath();
-		create();
+		ptree=newtree.treePath(); 
 		commitFileName=getHash()+".txt";
+		create();
 		
-		clearFile("index.txt");
-		
+		clearFile("index.txt"); 	
+		if(parent!=null) {
+			parent.setChild(this);
+			parent.create();
+		}
 	}
+	
+	public void setChild(Commit kid) {
+		this.child=kid;
+	}
+	
 	public String getFileName() {
 		return commitFileName;
 	}
@@ -70,9 +78,9 @@ public class Commit {
 		return line;
 	}
 	
-	private ArrayList<String[]> getFileContentTokens(File fileName) throws IOException{
+	private ArrayList<String[]> getFileContentTokens(String fileName) throws IOException{
 		ArrayList<String[]> result=new ArrayList<String[]>();
-		File file=new File("fileName");
+		File file=new File(fileName);
 		BufferedReader reader=new BufferedReader(new FileReader(file));
 
 		String line=reader.readLine();
@@ -103,13 +111,13 @@ public class Commit {
 		if(parent==null) {
 			total+="\n";
 		}else {
-			total+="\n"+parent.getHash();
+			total+="\n"+parent.getFileName();
 		}
 		
 		if(child==null) {
 			total+="\n";
 		}else {
-			total+="\n"+child.getHash();
+			total+="\n"+child.getFileName();
 		}
 		
 		total+="\n"+author+"\n"+date+"\n"+summary;
@@ -120,7 +128,7 @@ public class Commit {
 	
 	public String getHash() throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("SHA-1"); //generates sha1
-		byte[] messageDigest = md.digest(getContents().getBytes());
+		byte[] messageDigest = md.digest((ptree+parent+author+date+summary).getBytes());
 		BigInteger no = new BigInteger(1, messageDigest);
 		String hashtext = no.toString(16);
 		while (hashtext.length() < 40) {
@@ -131,10 +139,10 @@ public class Commit {
 		
 	public void create() throws IOException, NoSuchAlgorithmException {
         
-        File file = new File("./objects/" + getHash() + ".txt");
+        File file = new File("./objects/" + commitFileName);
         file.createNewFile();
         
-        Path p = Paths.get("./objects/" + getHash() + ".txt");
+        Path p = Paths.get("./objects/" + commitFileName);
 		try {
             //Files.writeString(p, content, StandardCharsets.ISO_8859_1); //creates file
             Files.writeString(p, getContents());
